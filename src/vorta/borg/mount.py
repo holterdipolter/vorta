@@ -16,13 +16,13 @@ class BorgMountJob(BorgJob):
         else:
             ret['ok'] = False  # Set back to false, so we can do our own checks here.
 
-        cmd = ['borg', '--log-json', 'mount']
+        cmd = ['borg', '--log-json', 'mount', '-o', 'allow_other']
 
         # Try to override existing permissions when mounting an archive. May help to read
         # files that come from a different system, like a restrictive NAS.
         override_mount_permissions = SettingsModel.get(key='override_mount_permissions').value
         if override_mount_permissions:
-            cmd += ['-o', f"umask=0277,uid={os.getuid()}"]
+            cmd += [f"umask=0277,uid={os.getuid()}"]
 
         cmd += [f"{profile.repo.url}"]
 
